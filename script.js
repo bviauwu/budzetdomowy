@@ -81,3 +81,9 @@ function render() {
         summary.appendChild(div);
     }
 }
+
+function remove(id) {
+    transactions = transactions.filter(t => t.id !== id);
+    save();
+    render();
+}
