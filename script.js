@@ -1,18 +1,7 @@
-const form = document.getElementById("form");
+let transactions = JSON.parse(localStorage.getItem("budget")) || [];
+let members = JSON.parse(localStorage.getItem("members")) || [];
 
-form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const data = {
-        amount: form.amount.value,
-        type: form.type.value,
-        description: form.description.value
-    };
-
-    await fetch("add.php", {
-        method: "POST",
-        body: JSON.stringify(data)
-    });
-
-    location.reload();
-});
+function save() {
+    localStorage.setItem("budget", JSON.stringify(transactions));
+    localStorage.setItem("members", JSON.stringify(members));
+}
