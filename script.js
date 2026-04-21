@@ -33,12 +33,14 @@ function addMember() {
 
 // tu mi pomogl czat bo bylo trudne
 function render() {
-    const list = document.getElementById("list");
+    const incomeList = document.getElementById("income-list");
+    const expenseList = document.getElementById("expense-list");
     const totalEl = document.getElementById("total");
     const expensesEl = document.getElementById("expenses");
     const summary = document.getElementById("saldo");
 
-    list.innerHTML = "";
+    incomeList.innerHTML = "";
+    expenseList.innerHTML = "";
     summary.innerHTML = "";
 
     let total = 0;
@@ -48,25 +50,24 @@ function render() {
 
     transactions.slice().reverse().forEach(t => {
         const li = document.createElement("li");
-
-        li.className = t.type;
+        const prefix = t.type === "income" ? "+" : "-";
 
         li.innerHTML = `
-            ${t.amount} (${t.type}) - ${t.desc} 
+            ${prefix} ${t.amount} - ${t.desc} 
             <b>[${t.member}]</b>
             <button onclick="remove(${t.id})">❌</button>
         `;
 
-        list.appendChild(li);
-
-        if (!perMember[t.member]) perMember[t.member] = 0;
-
         if (t.type === "income") {
+            incomeList.appendChild(li);
             total += t.amount;
+            if (!perMember[t.member]) perMember[t.member] = 0;
             perMember[t.member] += t.amount;
         } else {
+            expenseList.appendChild(li);
             total -= t.amount;
             totalExpenses += t.amount;
+            if (!perMember[t.member]) perMember[t.member] = 0;
             perMember[t.member] -= t.amount;
         }
     });
