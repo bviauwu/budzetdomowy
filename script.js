@@ -36,7 +36,7 @@ function render() {
     const list = document.getElementById("list");
     const totalEl = document.getElementById("total");
     const expensesEl = document.getElementById("expenses");
-    const summary = document.getElementById("membersSummary");
+    const summary = document.getElementById("saldo");
 
     list.innerHTML = "";
     summary.innerHTML = "";
@@ -87,3 +87,26 @@ function remove(id) {
     save();
     render();
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("form").addEventListener("submit", e => {
+        e.preventDefault();
+
+        const newT = {
+            id: Date.now(),
+            amount: parseFloat(document.getElementById("amount").value),
+            type: document.getElementById("type").value,
+            desc: document.getElementById("desc").value,
+            member: document.getElementById("member").value
+        };
+
+        transactions.push(newT);
+
+        save();
+        render();
+        e.target.reset();
+    });
+
+    renderMembersSelect();
+    render();
+});
