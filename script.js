@@ -53,8 +53,10 @@ function render() {
         const prefix = t.type === "income" ? "+" : "-";
 
         li.innerHTML = `
-            ${prefix} ${t.amount} - ${t.desc} 
-            <b>[${t.member}]</b>
+            <span class="prefix-icon">${prefix}</span>
+            <span class="amount-value">${t.amount}</span>
+            <span class="transaction-desc">${t.desc}</span>
+            <b class="transaction-member">[${t.member}]</b>
             <button onclick="remove(${t.id})">❌</button>
         `;
 
