@@ -25,7 +25,22 @@
         <option value="expense">Wydatek</option>
     </select>
     <select id="member"></select>
-    <input type="text" id="desc" placeholder="Opis">
+    
+    <select id="category" required>
+        <option value="">-- Wybierz kategorię --</option>
+        <option value="Impreza">Impreza</option>
+        <option value="Jedzenie">Jedzenie</option>
+        <option value="Zachcianka">Zachcianka</option>
+        <option value="Alkohol">Alkohol</option>
+        <option value="Narkotyki">Narkotyki</option>
+        <option value="Papierosy">Papierosy</option>
+        <option value="Dom">Dom</option>
+        <option value="Auto">Auto</option>
+        <option value="Wakacje">Wakacje</option>
+        <option value="Hazard">Hazard</option>
+    </select>
+    
+    <input type="text" id="desc" placeholder="Opis (opcjonalnie)">
 
     <button>Dodaj</button>
 </form>
@@ -33,14 +48,17 @@
 <div class="kontener">
     <div class="wplaty">
         <h2>Wpłaty</h2>
-        <ul id="income-list"></ul>
+        <div id="income-list"></div>
     </div>
 
     <div class="wplaty">
         <h2>Wydatki</h2>
-        <ul id="expense-list"></ul>
+        <div id="expense-list"></div>
     </div>
 </div>
+
+<h2>Podsumowanie po kategoriach</h2>
+<div id="categories-summary"></div>
 
 <h2>Saldo osób</h2>
 <div id="saldo"></div>
