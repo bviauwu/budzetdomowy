@@ -263,3 +263,31 @@ h2 {
 .wplaty ul::-webkit-scrollbar-thumb:hover {
     background: #ff6666;
 }
+
+/* Alert styles */
+.alert {
+    padding: 15px 20px;
+    margin: 15px auto;
+    max-width: 600px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1.1em;
+    text-align: center;
+    animation: alertPulse 0.5s ease;
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.2);
+    border: 2px solid #ffc107;
+    color: #ffc107;
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
+}
+
+@keyframes alertPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 193, 7, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(255, 193, 7, 0.7);
+    }
+}

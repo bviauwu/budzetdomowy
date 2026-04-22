@@ -38,6 +38,7 @@ function render() {
     const totalEl = document.getElementById("total");
     const expensesEl = document.getElementById("expenses");
     const summary = document.getElementById("saldo");
+    const noFundsAlert = document.getElementById("noFundsAlert");
 
     incomeList.innerHTML = "";
     expenseList.innerHTML = "";
@@ -77,6 +78,13 @@ function render() {
     totalEl.textContent = total.toFixed(2);
     expensesEl.textContent = totalExpenses.toFixed(2);
 
+    // Wyświetl powiadomienie jeśli saldo wynosi 0
+    if (total === 0) {
+        noFundsAlert.style.display = "block";
+    } else {
+        noFundsAlert.style.display = "none";
+    }
+
     for (let m in perMember) {
         const div = document.createElement("div");
         div.className = "member-box";
@@ -95,12 +103,31 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("form").addEventListener("submit", e => {
         e.preventDefault();
 
+        const amount = parseFloat(document.getElementById("amount").value);
+        const type = document.getElementById("type").value;
+        const member = document.getElementById("member").value;
+
+
+        let currentTotal = 0;
+        transactions.forEach(t => {
+            if (t.type === "income") {
+                currentTotal += t.amount;
+            } else {
+                currentTotal -= t.amount;
+            }
+        });
+
+        if (type === "expense" && amount > currentTotal) {
+            alert("⚠️ Nie można dokonywać wypłat! Kwota wydatku (" + amount.toFixed(2) + " PLN) przekracza dostępne saldo (" + currentTotal.toFixed(2) + " PLN).");
+            return;
+        }
+
         const newT = {
             id: Date.now(),
-            amount: parseFloat(document.getElementById("amount").value),
-            type: document.getElementById("type").value,
+            amount: amount,
+            type: type,
             desc: document.getElementById("desc").value,
-            member: document.getElementById("member").value
+            member: member
         };
 
         transactions.push(newT);
