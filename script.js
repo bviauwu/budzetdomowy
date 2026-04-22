@@ -1,5 +1,6 @@
 let transactions = JSON.parse(localStorage.getItem("budget")) || [];
 let members = JSON.parse(localStorage.getItem("members")) || [];
+let currentModalTransactionId = null;
 
 function save() {
     localStorage.setItem("budget", JSON.stringify(transactions));
@@ -149,6 +150,9 @@ function render() {
         div.textContent = `${m}: ${perMember[m].toFixed(2)}`;
         summary.appendChild(div);
     }
+    
+    // Wyświetl statystyki
+    renderSpendingAnalysis();
 }
 
 function createCategoryTable(categoryName, transactions, type) {
@@ -175,12 +179,14 @@ function createCategoryTable(categoryName, transactions, type) {
     transactions.forEach(t => {
         const li = document.createElement("li");
         const prefix = t.type === "income" ? "+" : "-";
+        const commentCount = t.comments ? t.comments.length : 0;
 
         li.innerHTML = `
             <span class="prefix-icon">${prefix}</span>
             <span class="amount-value">${t.amount}</span>
             <span class="transaction-desc">${t.desc}</span>
             <b class="transaction-member">[${t.member}]</b>
+            <button class="comment-btn" onclick="openCommentModal(${t.id})" title="Komentarze i reactions">💬${commentCount > 0 ? ' ' + commentCount : ''}</button>
             <button onclick="remove(${t.id})">❌</button>
         `;
         
@@ -228,12 +234,14 @@ function createCategorySummaryBox(categoryName, transactions) {
     transactions.forEach(t => {
         const li = document.createElement("li");
         const prefix = t.type === "income" ? "+" : "-";
+        const commentCount = t.comments ? t.comments.length : 0;
 
         li.innerHTML = `
             <span class="prefix-icon">${prefix}</span>
             <span class="amount-value">${t.amount}</span>
             <span class="transaction-desc">${t.desc}</span>
             <b class="transaction-member">[${t.member}]</b>
+            <button class="comment-btn" onclick="openCommentModal(${t.id})" title="Komentarze i reactions">💬${commentCount > 0 ? ' ' + commentCount : ''}</button>
             <button onclick="remove(${t.id})">❌</button>
         `;
         
@@ -248,6 +256,194 @@ function remove(id) {
     transactions = transactions.filter(t => t.id !== id);
     save();
     render();
+}
+
+// Komentarze i reactions
+function openCommentModal(transactionId) {
+    currentModalTransactionId = transactionId;
+    const transaction = transactions.find(t => t.id === transactionId);
+    
+    if (!transaction) return;
+    
+    // Inicjalizuj strukturę jeśli nie istnieje
+    if (!transaction.comments) transaction.comments = [];
+    if (!transaction.reactions) transaction.reactions = {};
+    
+    // Wyświetl info o transakcji
+    const infoDiv = document.getElementById("modal-transaction-info");
+    const prefix = transaction.type === "income" ? "+" : "-";
+    infoDiv.innerHTML = `
+        <div class="transaction-info">
+            <p><strong>${transaction.member}</strong> - ${transaction.desc}</p>
+            <p>${prefix}${transaction.amount} PLN (${transaction.category})</p>
+        </div>
+    `;
+    
+    // Wyświetl reactions
+    renderReactions(transaction);
+    
+    // Wyświetl komentarze
+    renderComments(transaction);
+    
+    document.getElementById("commentModal").style.display = "block";
+}
+
+function closeCommentModal() {
+    document.getElementById("commentModal").style.display = "none";
+    currentModalTransactionId = null;
+}
+
+function addReaction(emoji) {
+    const transaction = transactions.find(t => t.id === currentModalTransactionId);
+    if (!transaction) return;
+    
+    if (!transaction.reactions) transaction.reactions = {};
+    if (!transaction.reactions[emoji]) {
+        transaction.reactions[emoji] = 0;
+    }
+    transaction.reactions[emoji]++;
+    
+    save();
+    renderReactions(transaction);
+    render();
+}
+
+function renderReactions(transaction) {
+    const reactionsDisplay = document.getElementById("reactions-display");
+    reactionsDisplay.innerHTML = "";
+    
+    if (transaction.reactions && Object.keys(transaction.reactions).length > 0) {
+        const reactionsDiv = document.createElement("div");
+        reactionsDiv.className = "reactions-summary";
+        
+        Object.entries(transaction.reactions).forEach(([emoji, count]) => {
+            const span = document.createElement("span");
+            span.className = "reaction-count";
+            span.textContent = `${emoji} ${count}`;
+            reactionsDiv.appendChild(span);
+        });
+        
+        reactionsDisplay.appendChild(reactionsDiv);
+    }
+}
+
+function addComment() {
+    const commentInput = document.getElementById("commentInput");
+    const commentText = commentInput.value.trim();
+    
+    if (!commentText) return;
+    
+    const transaction = transactions.find(t => t.id === currentModalTransactionId);
+    if (!transaction) return;
+    
+    if (!transaction.comments) transaction.comments = [];
+    
+    transaction.comments.push({
+        text: commentText,
+        timestamp: new Date().toLocaleString()
+    });
+    
+    commentInput.value = "";
+    save();
+    renderComments(transaction);
+    render();
+}
+
+function renderComments(transaction) {
+    const commentsList = document.getElementById("comments-list");
+    commentsList.innerHTML = "";
+    
+    if (transaction.comments && transaction.comments.length > 0) {
+        transaction.comments.forEach(comment => {
+            const div = document.createElement("div");
+            div.className = "comment-item";
+            div.innerHTML = `
+                <p class="comment-text">${comment.text}</p>
+                <small class="comment-time">${comment.timestamp}</small>
+            `;
+            commentsList.appendChild(div);
+        });
+    } else {
+        commentsList.innerHTML = "<p style='color: #888;'>Brak komentarzy</p>";
+    }
+}
+
+// Statystyki
+function renderSpendingAnalysis() {
+    const analysisDiv = document.getElementById("spending-analysis");
+    analysisDiv.innerHTML = "";
+    
+    if (members.length === 0) {
+        analysisDiv.innerHTML = "<p>Brak członków rodziny</p>";
+        return;
+    }
+    
+    // Obliczenia
+    let memberStats = {};
+    members.forEach(member => {
+        memberStats[member] = {
+            totalIncome: 0,
+            totalExpense: 0,
+            byCategory: {}
+        };
+    });
+    
+    transactions.forEach(t => {
+        if (t.type === "income") {
+            memberStats[t.member].totalIncome += t.amount;
+        } else {
+            memberStats[t.member].totalExpense += t.amount;
+            if (!memberStats[t.member].byCategory[t.category]) {
+                memberStats[t.member].byCategory[t.category] = 0;
+            }
+            memberStats[t.member].byCategory[t.category] += t.amount;
+        }
+    });
+    
+    // Ranking wydatków
+    const spendingRanking = members
+        .map(m => ({
+            member: m,
+            spending: memberStats[m].totalExpense,
+            balance: memberStats[m].totalIncome - memberStats[m].totalExpense
+        }))
+        .sort((a, b) => b.spending - a.spending);
+    
+    // Karty statystyk
+    const statsContainer = document.createElement("div");
+    statsContainer.className = "stats-container";
+    
+    spendingRanking.forEach((stat, index) => {
+        const card = document.createElement("div");
+        card.className = "stat-card";
+        
+        // Określ czy to darmozjad
+        const isDarmozjad = stat.balance < 0 && Math.abs(stat.balance) > 100;
+        const cardClass = isDarmozjad ? "darmozjad" : "";
+        
+        card.innerHTML = `
+            <div class="stat-header">
+                <h3>${index + 1}. ${stat.member}</h3>
+                <span class="stat-ranking">${isDarmozjad ? "🎩 Darmozjad" : "👤"}</span>
+            </div>
+            <div class="stat-info">
+                <p>💰 Wpłaty: <strong>+${memberStats[stat.member].totalIncome.toFixed(2)}</strong></p>
+                <p>💸 Wydatki: <strong>-${stat.spending.toFixed(2)}</strong></p>
+                <p>📊 Saldo: <span class="${stat.balance >= 0 ? 'positive' : 'negative'}"><strong>${stat.balance >= 0 ? "+" : ""}${stat.balance.toFixed(2)}</strong></span></p>
+            </div>
+            <div class="category-breakdown">
+                <h4>Wydatki po kategoriach:</h4>
+                ${Object.entries(memberStats[stat.member].byCategory)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([cat, amount]) => `<p>• ${cat}: <strong>-${amount.toFixed(2)} PLN</strong></p>`)
+                    .join("")}
+            </div>
+        `;
+        
+        statsContainer.appendChild(card);
+    });
+    
+    analysisDiv.appendChild(statsContainer);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -297,4 +493,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderMembersSelect();
     render();
+    
+    // Zamknij modal jeśli klikniemy na tło
+    document.getElementById("commentModal").addEventListener("click", function(e) {
+        if (e.target === this) {
+            closeCommentModal();
+        }
+    });
 });

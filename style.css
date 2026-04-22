@@ -481,3 +481,291 @@ h2 {
     margin: 20px 0;
     padding: 0 20px;
 }
+
+/* Modal styles */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background-color: #1a1a1a;
+    padding: 30px;
+    border: 2px solid #ff3333;
+    border-radius: 10px;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 0 50px rgba(255, 51, 51, 0.5);
+    animation: modalSlide 0.3s ease;
+}
+
+@keyframes modalSlide {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-close {
+    color: #ff3333;
+    float: right;
+    font-size: 2em;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.modal-close:hover {
+    color: #ff6666;
+}
+
+.modal-content h3 {
+    color: #ff3333;
+    text-align: center;
+    margin-top: 0;
+}
+
+.transaction-info {
+    background: rgba(255, 51, 51, 0.1);
+    border-left: 3px solid #ff3333;
+    padding: 12px;
+    margin: 15px 0;
+    border-radius: 4px;
+}
+
+.transaction-info p {
+    margin: 8px 0;
+    color: #fff;
+}
+
+/* Reactions */
+.reactions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 15px 0;
+    flex-wrap: wrap;
+}
+
+.reaction-btn {
+    font-size: 1.8em;
+    border: 1px solid #ff6666;
+    background-color: rgba(255, 51, 51, 0.1);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.reaction-btn:hover {
+    background-color: rgba(255, 51, 51, 0.3);
+    transform: scale(1.1);
+}
+
+.reactions-summary {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 15px 0;
+    padding: 10px;
+    background: rgba(255, 102, 102, 0.1);
+    border-radius: 6px;
+}
+
+.reaction-count {
+    background: rgba(255, 51, 51, 0.2);
+    border: 1px solid #ff6666;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 1.3em;
+}
+
+/* Comments */
+#comments-container {
+    margin-top: 20px;
+}
+
+#comments-list {
+    background: rgba(26, 26, 26, 0.8);
+    border-left: 3px solid #ff3333;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.comment-item {
+    background: rgba(42, 42, 42, 0.7);
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 4px;
+    border-left: 2px solid #ff6666;
+}
+
+.comment-text {
+    margin: 10px 0 5px 0;
+    color: #fff;
+    word-break: break-word;
+}
+
+.comment-time {
+    color: #999;
+    font-size: 0.85em;
+}
+
+#commentInput {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #2a2a2a;
+    border: 1px solid #ff6666;
+    border-radius: 4px;
+    color: white;
+    box-sizing: border-box;
+}
+
+#commentInput::placeholder {
+    color: #888;
+}
+
+#commentInput:focus {
+    outline: none;
+    box-shadow: 0 0 10px rgba(255, 51, 51, 0.5);
+}
+
+.modal-content button:not(.reaction-btn):not(.modal-close) {
+    background-color: #ff3333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+}
+
+.modal-content button:not(.reaction-btn):not(.modal-close):hover {
+    background-color: #ff6666;
+    box-shadow: 0 0 10px rgba(255, 51, 51, 0.7);
+}
+
+/* Comment button */
+.comment-btn {
+    background-color: #4a90e2 !important;
+    color: white !important;
+    border: none !important;
+    padding: 6px 10px !important;
+    font-size: 0.9em !important;
+    margin-right: 5px !important;
+}
+
+.comment-btn:hover {
+    background-color: #357abd !important;
+}
+
+/* Statistics/Analysis */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+    padding: 0 20px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, rgba(255, 51, 51, 0.15), rgba(255, 102, 102, 0.1));
+    border: 2px solid #ff6666;
+    border-radius: 10px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    box-shadow: 0 0 25px rgba(255, 51, 51, 0.5);
+    border-color: #ff3333;
+    transform: translateY(-3px);
+}
+
+.stat-card.darmozjad {
+    border-color: #ff9900;
+    background: linear-gradient(135deg, rgba(255, 153, 0, 0.2), rgba(255, 102, 0, 0.1));
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ff3333;
+}
+
+.stat-header h3 {
+    margin: 0;
+    color: #ff3333;
+    font-size: 1.2em;
+}
+
+.stat-ranking {
+    font-size: 1.5em;
+    color: #ffff00;
+}
+
+.stat-info {
+    margin: 15px 0;
+}
+
+.stat-info p {
+    margin: 8px 0;
+    font-size: 0.95em;
+    color: #fff;
+}
+
+.stat-info strong {
+    color: #ff6666;
+}
+
+.positive {
+    color: #00ff00;
+}
+
+.negative {
+    color: #ff6666;
+}
+
+.category-breakdown {
+    background: rgba(42, 42, 42, 0.5);
+    border-left: 3px solid #ff6666;
+    padding: 12px;
+    margin-top: 15px;
+    border-radius: 4px;
+}
+
+.category-breakdown h4 {
+    margin: 0 0 10px 0;
+    color: #ff3333;
+    font-size: 0.95em;
+}
+
+.category-breakdown p {
+    margin: 6px 0;
+    color: #ddd;
+    font-size: 0.9em;
+}
+
+#spending-analysis {
+    padding: 0 20px;
+}

@@ -60,8 +60,33 @@
 <h2>Podsumowanie po kategoriach</h2>
 <div id="categories-summary"></div>
 
+<h2>Analiza wydatków</h2>
+<div id="spending-analysis"></div>
+
 <h2>Saldo osób</h2>
 <div id="saldo"></div>
+
+<!-- Modal dla komentarzy -->
+<div id="commentModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeCommentModal()">&times;</span>
+        <h3>Komentarze i Reactions</h3>
+        <div id="modal-transaction-info"></div>
+        <div id="reactions-container" class="reactions">
+            <button class="reaction-btn" onclick="addReaction('👍')">👍</button>
+            <button class="reaction-btn" onclick="addReaction('❤️')">❤️</button>
+            <button class="reaction-btn" onclick="addReaction('😍')">😍</button>
+            <button class="reaction-btn" onclick="addReaction('😡')">😡</button>
+            <button class="reaction-btn" onclick="addReaction('😢')">😢</button>
+        </div>
+        <div id="reactions-display"></div>
+        <div id="comments-container">
+            <div id="comments-list"></div>
+            <input type="text" id="commentInput" placeholder="Dodaj komentarz..." />
+            <button onclick="addComment()">Dodaj komentarz</button>
+        </div>
+    </div>
+</div>
 
 </body>
 <script src="script.js"></script>
