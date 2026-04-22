@@ -153,6 +153,7 @@ function render() {
     
     // Wyświetl statystyki
     renderSpendingAnalysis();
+     setTimeout(renderChart, 0);
 }
 
 function createCategoryTable(categoryName, transactions, type) {
@@ -501,3 +502,54 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+let chartInstance = null;
+
+function renderChart() {
+    const canvas = document.getElementById("spendingChart");
+    
+    // 🔴 jeśli canvas nie istnieje → przerwij
+    if (!canvas) return;
+
+    const ctx = canvas.getContext("2d");
+
+    let spendingPerMember = {};
+
+    members.forEach(m => spendingPerMember[m] = 0);
+
+    transactions.forEach(t => {
+        if (t.type === "expense") {
+            spendingPerMember[t.member] += t.amount;
+        }
+    });
+
+    const labels = Object.keys(spendingPerMember);
+    const data = Object.values(spendingPerMember);
+
+    // 🔴 jeśli brak danych → nie rysuj pustego wykresu
+    if (data.length === 0) return;
+
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Wydatki (PLN)",
+                data: data,
+                backgroundColor: "rgba(255, 51, 51, 0.6)",
+                borderColor: "#ff3333",
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { ticks: { color: "white" }},
+                y: { ticks: { color: "white" }}
+            }
+        }
+    });
+}
